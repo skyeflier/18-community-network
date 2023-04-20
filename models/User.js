@@ -43,6 +43,11 @@ const userSchema = new User(
     }
 )
 
+// Below defines a virtual for friendCount
+userSchema.virtual('friendCount').get(function() {
+    return this.friends.length;
+  });
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
