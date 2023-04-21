@@ -7,6 +7,7 @@ const {
   updateUser,
   deleteUser,
 } = require('../../controllers/userController.js');
+
 const Thought = require('../../models/Thought');
 
 // Middleware function to remove a user's associated thoughts when deleted
@@ -21,7 +22,9 @@ const deleteUserThoughts = async (req, res, next) => {
 };
 
 // /api/user
-router.route('/').get(getUsers).post(createUser);
+router.route('/')
+  .get(getUsers)
+  .post(createUser);
 
 // /api/user/:userId - separate this route 
 router

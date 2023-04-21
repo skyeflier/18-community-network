@@ -1,8 +1,7 @@
-const { Schema, model } = require('mongoose');
-// const XXSchema = require('./XXAssignment');
-// const user = await User.findById(userId).populate('friends');
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
 
-const userSchema = new User(
+const userSchema = new Schema(
     {
         username: {
             type: String,
@@ -36,10 +35,10 @@ const userSchema = new User(
     },
     {
         toJSON: {
-            virtual: true
+            virtuals: true,
         }
     }
-)
+);
 
 // Below defines a virtual for friendCount
 userSchema.virtual('friendCount').get(function () {
@@ -49,3 +48,4 @@ userSchema.virtual('friendCount').get(function () {
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+

@@ -45,13 +45,21 @@ module.exports = {
     }
   },
 
+  //get a user's friend
+  async getFriend(req, res) {
+    try {
+      // Find the user by ID
+      const user = await User.findOne({ _id: req.params.userId });
 
-  // get a user's friend
-  // async getFriend(req, res) {
-  //   try {
-  //     const user = await User.findOne({ _id: req.params.userId })
-  //   }
-  // },
+      // Find the user's friend by ID
+      const friend = await User.find({ _id: { $in: user.friend } });
+
+      res.json(friend);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Oh no! That user has no friends :( ' });
+    }
+  },
 
   // create a new user
   async createUser(req, res) {
@@ -109,48 +117,5 @@ module.exports = {
       console.log(err);
       res.status(500).json(err);
     }
-  },
-
-//   // Add an reaction to a user
-//   async addReaction(req, res) {
-//     try {
-//       console.log('You are adding an reaction');
-//       console.log(req.body);
-//       const user = await User.findOneAndUpdate(
-//         { _id: req.params.userId },
-//         { $addToSet: { reactions: req.body } },
-//         { runValidators: true, new: true }
-//       );
-
-//       if (!user) {
-//         return res
-//           .status(404)
-//           .json({ message: 'No user found with that ID :(' })
-//       }
-
-//       res.json(user);
-//     } catch (err) {
-//       res.status(500).json(err);
-//     }
-//   },
-//   // Delete reaction from a user
-//   async deleteReaction(req, res) {
-//     try {
-//       const user = await User.findOneAndUpdate(
-//         { _id: req.params.userId },
-//         { $pull: { reaction: { reactionId: req.params.reactionId } } },
-//         { runValidators: true, new: true }
-//       );
-
-//       if (!user) {
-//         return res
-//           .status(404)
-//           .json({ message: 'No user found with that ID :(' });
-//       }
-
-//       res.json(user);
-//     } catch (err) {
-//       res.status(500).json(err);
-//     }
-//   },
-// };
+  }
+};

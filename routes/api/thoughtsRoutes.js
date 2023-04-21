@@ -8,12 +8,26 @@ const {
   deleteThought,
   addThoughtReaction,
   deleteThoughtReaction
-} = require('../../controllers/userController');
+} = require('../../controllers/thoughtController');
 
-// /api/user
-router.route('/').get(getThoughts).post(createThought);
+// Middleware function to remove a reaction when deleted
+const deleteThoughtReactionMiddleware = async (req, res, next) => {
+  try {
+    const reactionId = req.params.reactionId;
+    await Thought.updateOne({ _id: req.params.thoughtId }, { $pull: { reactions: { reactionId: reactionId } } });
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
 
-// /api/user/:userId
+// /api/thought
+router
+  .route('/')
+  .get(getThoughts)
+  .post(createThought);
+
+// /api/thought/:thoughtId
 router
   .route('/:thoughtId')
   .get(getSingleThought)
@@ -22,10 +36,7 @@ router
 
 router
   .route('/:thoughtId/reactions')
-  .get(addThoughtReaction)
-
-router
-  .route('/:thoughtId/reactions/:reactionId')
-  .delete(deleteThoughtReaction);
+  .post(addThoughtReaction)
+  .delete(deleteThoughtReactionMiddleware);
 
 module.exports = router;
