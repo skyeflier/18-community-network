@@ -9,9 +9,7 @@ const userSchema = new User(
             unique: true,
             required: true,
             trim: true,
-        }
-    },
-    {
+        },
         email: {
             type: String,
             unique: true,
@@ -23,30 +21,30 @@ const userSchema = new User(
                 message: 'Emails do not match'
             }
         },
-        confirmEmail: {
-            type: String,
-            required: true,
-            trim: true
-        },
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Thought',
+            }
+        ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+            }
+        ]
     },
     {
-        thoughts: {
-            type: Schema.Types.ObjectId,
-            ref: 'Thoughts',
-        }
-    },
-    {
-        friends: {
-            type: Schema.Types.ObjectId,
-            ref: 'Friends',
+        toJSON: {
+            virtual: true
         }
     }
 )
 
 // Below defines a virtual for friendCount
-userSchema.virtual('friendCount').get(function() {
+userSchema.virtual('friendCount').get(function () {
     return this.friends.length;
-  });
+});
 
 const User = mongoose.model('User', userSchema);
 
