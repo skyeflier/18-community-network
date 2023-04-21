@@ -6,20 +6,8 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  deleteUserThoughts,
 } = require('../../controllers/userController.js');
-
-// /api/user
-router.route('/').get(getUsers).post(createUser);
-
-// /api/user/:userId Need to separate this route 
-router
-  .route('/:userId')
-  .get(getSingleUser)
-  .get(getFriend)
-  .put(updateUser)
-  .delete(deleteUser);
-  .delete (deleteUserThoughts, deleteUser);
+const Thought = require('../../models/Thought');
 
 // Middleware function to remove a user's associated thoughts when deleted
 const deleteUserThoughts = async (req, res, next) => {
@@ -31,5 +19,16 @@ const deleteUserThoughts = async (req, res, next) => {
     next(err);
   }
 };
+
+// /api/user
+router.route('/').get(getUsers).post(createUser);
+
+// /api/user/:userId - separate this route 
+router
+  .route('/:userId')
+  .get(getSingleUser)
+  .get(getFriend)
+  .put(updateUser)
+  .delete(deleteUserThoughts, deleteUser);
 
 module.exports = router;

@@ -20,10 +20,6 @@ router
   .put(updateThought)
   .delete(deleteThought);
 
-// router
-//   .route('/:thoughtId/friends/:friendID')
-//   .get(getFriendThought)
-
 router
   .route('/:thoughtId/reactions')
   .get(addThoughtReaction)
