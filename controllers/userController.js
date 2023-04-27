@@ -1,23 +1,23 @@
 // ObjectId() method for converting userId string into an ObjectId for querying database
 const { ObjectId } = require('mongoose').Types;
-const { User, Thoughts } = require('../models');
+const { User, Thought } = require('../models');
 
 // An aggregate function to get the number of users overall
-const userCount = async () => {
-  const numberOfUsers = await User.aggregate();
-  return numberOfUsers;
-}
+// const userCount = async () => {
+//   const numberOfUsers = await User.aggregate();
+//   return numberOfUsers;
+// }
 
 module.exports = {
   // Get all users
   async getUsers(req, res) {
     try {
       const users = await User.find();
-      const userObj = {
-        users,
-        userCount: await userCount(),
-      };
-      return res.json(userObj);
+      // const userObj = {
+      //   users,
+      //   userCount: await userCount(),
+      // };
+      return res.json(users);
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
@@ -37,11 +37,48 @@ module.exports = {
 
       res.json({
         user,
-        grade: await grade(req.params.userId),
       });
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
+    }
+  },
+
+  //create a user's friend
+  async addUserFriend(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: req.params.friendId } },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: 'No friends!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  // Delete user friend
+  async deleteUserFriend(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },
+        { runValidators: true, new: true }
+      )
+
+      if (!user) {
+        return res.status(404).json({ message: 'No friends!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
 
@@ -80,10 +117,6 @@ module.exports = {
         { runValidators: true, new: true } //enables validation of the update operation and to return the modified document after the update
       );
 
-      if (!userId) {
-        return res.status(404).json({ message: 'No user with this id!' });
-      }
-
       res.json(user);
     } catch (err) {
       console.log(err);
@@ -96,11 +129,7 @@ module.exports = {
     try {
       const user = await User.findOneAndRemove({ _id: req.params.userId });
 
-      if (!user) {
-        return res.status(404).json({ message: 'No such user exists' })
-      }
-
-      const thoughts = await Thoughts.findOneAndUpdate(
+      const thoughts = await Thought.findOneAndUpdate(
         { users: req.params.userId },
         { $pull: { users: req.params.userId } },
         { new: true }

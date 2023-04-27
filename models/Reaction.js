@@ -4,7 +4,7 @@ const { Schema, Types, model } = mongoose;
 const reactionSchema = new Schema(
     {
         reactionId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             default: () => new Types.ObjectId(),
         },
         reactionBody: {

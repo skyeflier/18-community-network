@@ -13,12 +13,7 @@ const userSchema = new Schema(
             type: String,
             unique: true,
             required: true,
-            validate: {
-                validator: function (value) {
-                    return this.confirmEmail === value;
-                },
-                message: 'Emails do not match'
-            }
+            match: /^([a-z0-9_.-]+)@([\da-z.-]+).([a-z.]{2,6})$/,
         },
         thoughts: [
             {
