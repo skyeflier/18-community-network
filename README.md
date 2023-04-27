@@ -25,6 +25,8 @@ Run npm start in the root directory to start the server
 Use a tool like Insomnia or Postman to test the API routes.
 
 ## Usage
+Check out this video on how to use insomnia to check the routes: https://watch.screencastify.com/v/RGMxx7Z7PYx9Zj50yOOe 
+
 GET Routes
 /api/users: retrieves all users
 /api/users/:id: retrieves a single user by id
